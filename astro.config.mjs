@@ -4,16 +4,21 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react'; // 1. Asegúrate de que esta dependencia esté importada
 
+import vercel from '@astrojs/vercel';
+
 // https://astro.build/config
 export default defineConfig({
-    output: 'server',
-    // 2. Aquí es donde van las integraciones de Astro
-    integrations: [
-        react(), // <-- SOLUCIÓN para habilitar el renderer de .jsx
-    ],
-    
-    // 3. Mantienes tu configuración de Vite/Tailwind
-    vite: {
-        plugins: [tailwindcss()]
-    }
+  output: 'server',
+
+  // 2. Aquí es donde van las integraciones de Astro
+  integrations: [
+      react(), // <-- SOLUCIÓN para habilitar el renderer de .jsx
+  ],
+
+  // 3. Mantienes tu configuración de Vite/Tailwind
+  vite: {
+      plugins: [tailwindcss()]
+  },
+
+  adapter: vercel()
 });
