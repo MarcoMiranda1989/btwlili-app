@@ -1,0 +1,67 @@
+---
+import '../styles/global.css'
+
+// 1. Definimos el correo del administrador
+const ADMIN_EMAIL = "lili.miranda.angeles@gmail.com"; 
+
+// 2. Obtenemos las cookies del servidor
+const session = Astro.cookies.get("user_session");
+const emailCookie = Astro.cookies.get("user_email")?.value;
+
+// 3. Limpiamos el email (por si tiene caracteres especiales como %40)
+const userEmail = emailCookie ? decodeURIComponent(emailCookie) : null;
+
+// 4. Variables de control
+const isLoggedIn = Boolean(session);
+const isAdmin = isLoggedIn && userEmail === ADMIN_EMAIL;
+---
+
+<header class="bg-[#334155] shadow-xl sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            
+            <a href="/" class="text-2xl font-extrabold text-white tracking-wider">
+                Inventario 📱
+            </a>
+            
+            <nav class="flex space-x-4 items-center">
+                
+                {/* SOLO se muestra si es Administrador */}
+                {isAdmin && (
+                    <a 
+                        href="/nuevo-producto" 
+                        class="bg-green-600 text-white hover:bg-green-700 transition duration-150 ease-in-out font-semibold px-3 py-2 rounded-md"
+                        aria-label="Ir a la página para añadir un nuevo producto"
+                    >
+                        + Crear
+                    </a>
+                )}
+
+                {isLoggedIn ? (
+                    <>
+                        <a href="/carrito" class="bg-blue-600 text-white hover:bg-blue-700 transition duration-150 ease-in-out font-semibold px-3 py-2 rounded-md">
+                            Carrito de compras
+                        </a>
+                        <button id="logoutBtn" class="text-gray-300 hover:text-white text-sm underline ml-2">
+                            Cerrar Sesión
+                        </button>
+                    </>
+                ) : (
+                    <a href="/login" class="bg-blue-600 px-4 py-2 rounded-md text-white font-semibold hover:bg-blue-700">
+                        Iniciar Sesión
+                    </a>
+                )}
+            </nav>
+        </div>
+    </div>
+</header>
+
+<script>
+    // Lógica para cerrar sesión (Borrar cookies y redirigir)
+    const btn = document.getElementById('logoutBtn');
+    btn?.addEventListener('click', () => {
+        document.cookie = "user_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        document.cookie = "user_email=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        window.location.href = '/';
+    });
+</script>

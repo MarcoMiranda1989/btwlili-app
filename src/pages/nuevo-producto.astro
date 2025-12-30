@@ -1,0 +1,37 @@
+---
+// src/pages/nuevo-producto.astro
+// 1. Importar el componente de diseño (Layout y Header)
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import ProductForm from '../components/productForm'
+import '../styles/global.css'
+
+// 2. Importar el componente de React (ProductForm.jsx)
+import NewProductForm from '../components/productForm'; 
+
+//1. Definimos el unico usuario autorizado
+const ADMIN_AUTORIZADO= "lili.miranda.angeles@gmail.com"
+
+
+// 2. Leemos la cookie del email
+const userEmailRaw = Astro.cookies.get("user_email")?.value;
+const userEmail = userEmailRaw ? decodeURIComponent(userEmailRaw) : null;
+
+// 3. Verificamos: ¿Tiene sesión y es el correo correcto?
+if (!userEmail || userEmail !== ADMIN_AUTORIZADO) {
+    // Si no es el admin, lo mandamos al inicio sin escalas
+    return Astro.redirect('/'); 
+}
+---
+
+<Layout title="Crear Nuevo Producto">
+    
+    
+    <main class="container mx-auto p-4 max-w-xl">
+        <h1 class="text-3xl font-bold mb-6 text-center">Añadir Nuevo Producto</h1>
+        
+        {/* 3. Llamada al Componente de React */}
+        <NewProductForm client:load />
+        
+    </main>
+</Layout>
